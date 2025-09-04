@@ -4,9 +4,9 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const port = process.env.PORT || 3000; // important for Render!
+const port = process.env.PORT || 3000;
 
-// Serve static files (HTML, CSS, JS) from 'public'
+// Serve static files (HTML, CSS, JS) from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Create the 'uploads' directory if it doesn't exist
@@ -18,17 +18,19 @@ if (!fs.existsSync(uploadDir)) {
 // Configure Multer for file storage and validation
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadDir);
+        cb(null, uploadDir); // Set the destination folder
     },
     filename: (req, file, cb) => {
+        // Use the original file name
         cb(null, file.originalname);
     }
 });
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB (in bytes)
     fileFilter: (req, file, cb) => {
+        // Define allowed file types
         const allowedTypes = /jpeg|jpg|png|pdf/;
         const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = allowedTypes.test(file.mimetype);
@@ -36,12 +38,13 @@ const upload = multer({
         if (mimetype && extname) {
             cb(null, true);
         } else {
+            // Reject file and provide a specific error message
             cb('Error: Only JPEG, JPG, PNG, and PDF files are allowed!');
         }
     }
 });
 
-// Serve the homepage
+// Serve the homepage from the 'public' directory
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -50,14 +53,23 @@ app.get('/', (req, res) => {
 app.post('/upload', (req, res) => {
     upload.single('uploaded_file')(req, res, (err) => {
         if (err instanceof multer.MulterError) {
+            // Handle Multer's specific errors, e.g., file size limit
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).send('File size is too large. Max 5MB allowed.');
+            }
             return res.status(400).send(`Multer Error: ${err.message}`);
         } else if (err) {
+            // Handle other custom errors from the fileFilter function
             return res.status(400).send(`Upload Error: ${err}`);
         }
+        
+        // Check if a file was actually uploaded
         if (!req.file) {
             return res.status(400).send('No file selected!');
         }
-        res.send(`File uploaded successfully: ${req.file.originalname}`);
+        
+        // Success response
+        res.status(200).send(`File "${req.file.originalname}" uploaded successfully!`);
     });
 });
 
