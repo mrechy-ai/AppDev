@@ -1,10 +1,7 @@
 {
   "name": "file-serving-node",
   "version": "1.0.0",
-<<<<<<< HEAD
   "description": "",
-=======
->>>>>>> c785d20e2a8863c48550cc180c514396285f2348
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,16 +9,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-<<<<<<< HEAD
-  "dependencies": {
-    "mime": "^4.0.7",
-    "mime-types": "^3.0.1"
-=======
-  "description": "",
   "dependencies": {
     "express": "^5.1.0",
     "mime-types": "^3.0.1",
-    "multer": "^2.0.2"
->>>>>>> c785d20e2a8863c48550cc180c514396285f2348
+    "multer": "^2.0.2",
+    "mime": "^4.0.7"
   }
 }
