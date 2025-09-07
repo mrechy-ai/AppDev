@@ -30,15 +30,17 @@ const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         // Define allowed file types
-        const allowedTypes = /jpeg|jpg|png|pdf/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
+        const allowedExt = /html/;
+        const allowedMime = 'text/html';
+        
+        const extname = allowedExt.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = file.mimetype === allowedMime;
 
         if (mimetype && extname) {
             cb(null, true);
         } else {
             // Reject file and provide a specific error message
-            cb('Error: Only JPEG, JPG, PNG, and PDF files are allowed!');
+            cb('Error: Only HTML files are allowed!');
         }
     }
 });
