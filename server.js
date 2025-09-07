@@ -68,8 +68,8 @@ app.post('/upload', (req, res) => {
         
         // Success response
         res.status(200).send(`File "${req.file.originalname}" uploaded successfully!`);
+        console.log('File:', req.file);
     });
-    console.log('File:', req.file);
 });
 
 app.listen(port, () => {
